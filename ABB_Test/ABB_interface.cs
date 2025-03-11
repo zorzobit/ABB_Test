@@ -2,6 +2,7 @@
 using ABB.Robotics.Controllers;
 using ABB.Robotics.Controllers.MotionDomain;
 using ABB.Robotics.Controllers.RapidDomain;
+using System.Buffers;
 
 namespace ABB_Test
 {
@@ -10,6 +11,7 @@ namespace ABB_Test
         public Controller Controller { get; set; }
         string sysID = "";
         MechanicalUnit mechUnit;
+        MotionSystem motionSystem ;
         public void Connect()
         {
             NetworkScanner scanner = new NetworkScanner();
@@ -20,6 +22,7 @@ namespace ABB_Test
                 this.Controller = Controller.Connect(controllers[0].SystemId, ConnectionType.Standalone);
                 this.Controller.Logon(UserInfo.DefaultUser);
                 mechUnit = this.Controller.MotionSystem.ActiveMechanicalUnit;
+                motionSystem = this.Controller.MotionSystem;
                 IsConnected = true;
             }
         }
@@ -37,6 +40,25 @@ namespace ABB_Test
         public RobTarget GetPosX()
         {
             return mechUnit.GetPosition(CoordinateSystemType.Base);
+        }
+        public ControllerOperatingMode OperationStatus()
+        {
+            return Controller.OperatingMode;
+        }
+        public int GetOverride()
+        {
+            var rt = motionSystem.SpeedRatio;
+            return rt;
+        }
+        public void SetOverride(int val)
+        {
+            if (Controller.OperatingMode == ControllerOperatingMode.Auto)
+            {
+                using (Mastership mastership = Mastership.Request(Controller.Rapid))
+                {
+                    motionSystem.SpeedRatio = val;
+                }
+            }
         }
     }
 }

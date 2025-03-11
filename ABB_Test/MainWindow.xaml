@@ -16,6 +16,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="12"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -29,6 +30,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Border BorderBrush="Black" BorderThickness="1">
@@ -130,8 +132,8 @@
                                 <ColumnDefinition Width="30"/>
                                 <ColumnDefinition Width="50"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="EZ"/>
-                            <TextBlock Grid.Column="1" Text="{Binding RobotPosition.Q1}"/>
+                            <TextBlock Text="EX"/>
+                            <TextBlock Grid.Column="1" Text="{Binding RobotPosition.RX}"/>
                         </Grid>
                         <Grid Grid.Row="4">
                             <Grid.ColumnDefinitions>
@@ -139,18 +141,22 @@
                                 <ColumnDefinition Width="50"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="EY"/>
-                            <TextBlock Grid.Column="1" Text="{Binding RobotPosition.Q2}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding RobotPosition.RY}"/>
                         </Grid>
                         <Grid Grid.Row="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30"/>
                                 <ColumnDefinition Width="50"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="EX"/>
-                            <TextBlock Grid.Column="1" Text="{Binding RobotPosition.Q3}"/>
+                            <TextBlock Text="EZ"/>
+                            <TextBlock Grid.Column="1" Text="{Binding RobotPosition.RZ}"/>
                         </Grid>
                     </Grid>
                 </Border>
+                <Label Grid.Column="3" Content="{Binding OperationStatus}"/>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Slider x:Name="OverrideSlider" Value="{Binding Override}" Maximum="100"/>
             </Grid>
         </Grid>
     </Grid>

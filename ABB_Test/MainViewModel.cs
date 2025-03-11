@@ -1,5 +1,7 @@
-﻿using ABB.Robotics.Controllers.RapidDomain;
+﻿using ABB.Robotics.Controllers.MotionDomain;
+using ABB.Robotics.Controllers.RapidDomain;
 using ABB.Robotics.RobotStudio.Stations;
+using RobotStudio.Services.RobApi;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace ABB_Test
 {
@@ -24,7 +27,22 @@ namespace ABB_Test
             DataCheck = new BackgroundWorker();
             DataCheck.DoWork += DataCheck_DoWork;
             DataCheck.RunWorkerCompleted += DataCheck_RunWorkerCompleted;
+            mainWindow.OverrideSlider.PreviewMouseDown += OverrideSlider_MouseDown;
+            mainWindow.OverrideSlider.PreviewMouseUp += OverrideSlider_MouseUp;
         }
+        bool overrideHold = false;
+        private void OverrideSlider_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if(abb_interface.IsConnected)
+                abb_interface.SetOverride(Override);
+            overrideHold = false;
+        }
+
+        private void OverrideSlider_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            overrideHold = true;
+        }
+
         public PositionModel RobotPosition { get; set; }
         private void DataCheck_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
@@ -37,6 +55,28 @@ namespace ABB_Test
             {
                 var jointTarget = abb_interface.GetPosJ();
                 var tcpTarget = abb_interface.GetPosX();
+                double qw = tcpTarget.Rot.Q1;
+                double qx = tcpTarget.Rot.Q2;
+                double qy = tcpTarget.Rot.Q3;
+                double qz = tcpTarget.Rot.Q4;
+
+                // roll (x-axis rotation)
+                double sinr = +2.0 * (qw * qx + qy * qz);
+                double cosr = +1.0 - 2.0 * (qx * qx + qy * qy);
+                double rx = Math.Atan2(sinr, cosr) * 180 / Math.PI;
+
+                // pitch (y-axis rotation)
+                double sinp = +2.0 * (qw * qy - qz * qx);
+                double ry;
+                if (Math.Abs(sinp) >= 1)
+                    ry = Math.Sign(sinp) * 180 / Math.PI;//(Math.PI / 2, sinp); // use 90 degrees if out of range
+                else
+                    ry = Math.Asin(sinp) * 180 / Math.PI;
+
+                // yaw (z-axis rotation)
+                double siny = +2.0 * (qw * qz + qx * qy);
+                double cosy = +1.0 - 2.0 * (qy * qy + qz * qz);
+                double rz = Math.Atan2(siny, cosy) * 180 / Math.PI;
                 RobotPosition = new PositionModel
                 {
                     J1 = Math.Round(jointTarget.RobAx.Rax_1, 3),
@@ -50,15 +90,24 @@ namespace ABB_Test
                     Y = Math.Round(tcpTarget.Trans.Y, 3),
                     Z = Math.Round(tcpTarget.Trans.Z, 3),
 
+                    RX = Math.Round(rx, 3),
+                    RY = Math.Round(ry, 3),
+                    RZ = Math.Round(rz, 3),
+
+
+
                     Q1 = Math.Round(tcpTarget.Rot.Q1, 3),
                     Q2 = Math.Round(tcpTarget.Rot.Q2, 3),
                     Q3 = Math.Round(tcpTarget.Rot.Q3, 3),
                     Q4 = Math.Round(tcpTarget.Rot.Q4, 3)
                 };
-
+                OperationStatus = abb_interface.OperationStatus() == ABB.Robotics.Controllers.ControllerOperatingMode.Auto ? "AUTO" : "MANUAL";
+                if(!overrideHold)
+                    Override = abb_interface.GetOverride();
             }
         }
-
+        public int Override {  get; set; }
+        public string OperationStatus { get; set; }
         public string ConnectionStatus { get; set; }
         public string ConnectButtonContext { get; set; }
         public ICommand ConnectButtonClick
@@ -99,6 +148,11 @@ namespace ABB_Test
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+        public double RX { get; set; }
+        public double RY { get; set; }
+        public double RZ { get; set; }
+
+
 
         public double Q1 { get; set; }
         public double Q2 { get; set; }
