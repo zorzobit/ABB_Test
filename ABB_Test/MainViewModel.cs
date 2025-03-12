@@ -104,12 +104,16 @@ namespace ABB_Test
                 OperationStatus = abb_interface.OperationStatus() == ABB.Robotics.Controllers.ControllerOperatingMode.Auto ? "AUTO" : "MANUAL";
                 if(!overrideHold)
                     Override = abb_interface.GetOverride();
+                ActiveTask=abb_interface.GetTaskStatus();
+                Modules = abb_interface.GetModules();
             }
         }
         public int Override {  get; set; }
         public string OperationStatus { get; set; }
         public string ConnectionStatus { get; set; }
         public string ConnectButtonContext { get; set; }
+        public string ActiveTask {  get; set; }
+        public string Modules { get; set; }
         public ICommand ConnectButtonClick
         {
             get
@@ -132,6 +136,50 @@ namespace ABB_Test
                         ConnectionStatus = "No controller";
                         ConnectButtonContext = "Connect";
                     }
+                }, o => true);
+            }
+        }
+        public ICommand Start
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if(abb_interface.IsConnected)
+                        abb_interface.Start();
+                }, o => true);
+            }
+        }
+        public ICommand Stop
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if (abb_interface.IsConnected)
+                        abb_interface.Stop();
+                }, o => true);
+            }
+        }
+        public ICommand Abort
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if (abb_interface.IsConnected)
+                        abb_interface.Abort();
+                }, o => true);
+            }
+        }
+        public ICommand Reset
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if (abb_interface.IsConnected)
+                        abb_interface.Reset();
                 }, o => true);
             }
         }
