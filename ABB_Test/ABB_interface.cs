@@ -27,9 +27,52 @@ namespace ABB_Test
                 mechUnit = this.Controller.MotionSystem.ActiveMechanicalUnit;
                 motionSystem = this.Controller.MotionSystem;
                 task = this.Controller.Rapid.GetTask("T_ROB1");
+                this.Controller.StateChanged += Controller_StateChanged;
+                this.Controller.OperatingModeChanged += Controller_OperatingModeChanged;
+                this.Controller.Rapid.TaskEnabledChanged += Rapid_TaskEnabledChanged;
+                this.Controller.Rapid.ExecutionStatusChanged += Rapid_ExecutionStatusChanged;
+                this.Controller.Rapid.RapidDataResolve += Rapid_RapidDataResolve;
+                this.Controller.Rapid.ExecutionCycleChanged += Rapid_ExecutionCycleChanged;
+                var P10 = this.Controller.Rapid.GetRapidData("T_ROB1", "P10");
+                var cyc = this.Controller.Rapid.Cycle;
+                var rem = this.Controller.Rapid.RemainingCycles;
                 IsConnected = true;
             }
         }
+
+        private void Rapid_ExecutionCycleChanged(object sender, EventArgs e)
+        {
+            var cy=e.ToString();
+        }
+
+        private void Controller_OperatingModeChanged(object sender, OperatingModeChangeEventArgs e)
+        {
+            var mdm = e.NewMode;
+        }
+
+        private void Controller_StateChanged(object sender, StateChangedEventArgs e)
+        {
+            var std = e.NewState; 
+            //ControllerState State;
+        }
+
+        private IRapidData Rapid_RapidDataResolve(object sender, ResolveEventArgs e)
+        {
+            var sdd = e.Name;
+            IRapidData rapidData;
+            return null;
+        }
+
+        private void Rapid_ExecutionStatusChanged(object sender, ExecutionStatusChangedEventArgs e)
+        {
+            var sfd = e.Status;
+        }
+
+        private void Rapid_TaskEnabledChanged(object sender, TaskEnabledChangedEventArgs e)
+        {
+            var hhsz = e.Enabled;
+        }
+
         public bool IsConnected { get; set; } = false;
         internal void DisConnect()
         {
@@ -56,7 +99,8 @@ namespace ABB_Test
         }
         public string GetTaskStatus()
         {
-            return task.ExecutionStatus.ToString();
+            var stat = Controller.Rapid.ExecutionStatus;
+            return task.ExecutionStatus.ToString() + "/Type:" + task.ExecutionType.ToString();
         }
         public void SetOverride(int val)
         {

@@ -168,7 +168,12 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="3">
-                <Slider x:Name="OverrideSlider" Value="{Binding Override}" Maximum="100" Margin="5"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Override:" HorizontalAlignment="Right"/>
+                <Slider Grid.Column="1" x:Name="OverrideSlider" Value="{Binding Override}" Maximum="100" Margin="5" MaxWidth="300"/>
             </Grid>
             <Grid Grid.Row="4">
                 
