@@ -7,11 +7,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ABB_Test"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
+        Title="MainWindow" Height="600" Width="1000">
+    <Window.Resources>
+        <Style x:Key="HorizontalSwitchStyle" TargetType="ToggleButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid Width="40" Height="25">
+                            <!-- Background -->
+                            <Border x:Name="SwitchBackground" Width="40" Height="25"
+                            CornerRadius="12" Background="#E5E5E5"/>
+
+                            <!-- Knob -->
+                            <Border x:Name="SwitchKnob" Width="20" Height="20"
+                            CornerRadius="10" Background="White"
+                            VerticalAlignment="Center" HorizontalAlignment="Left"
+                            Margin="2,0,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#888" BlurRadius="3" ShadowDepth="1.5"/>
+                                </Border.Effect>
+                            </Border>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SwitchBackground" Property="Background" Value="#4CD964"/>
+                                <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter TargetName="SwitchKnob" Property="Margin" Value="0,0,2,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
@@ -38,7 +72,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Border BorderBrush="Black" BorderThickness="1">
+                <Border BorderBrush="Black" BorderThickness="1" MaxHeight="120" VerticalAlignment="Top">
                     <Grid Margin="5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -98,7 +132,7 @@
                         </Grid>
                     </Grid>
                 </Border>
-                <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1">
+                <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1" MaxHeight="120" VerticalAlignment="Top">
                     <Grid Margin="5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -177,7 +211,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="Override:" HorizontalAlignment="Right"/>
-                <Slider Grid.Column="1" x:Name="OverrideSlider" Value="{Binding Override}" Maximum="100" Margin="5" MaxWidth="300"/>
+                <Slider Grid.Column="1" x:Name="OverrideSlider" Value="{Binding Override, UpdateSourceTrigger=PropertyChanged}" Maximum="100" Margin="5" MaxWidth="300"/>
             </Grid>
             <Grid Grid.Row="4">
                 <ListView ItemsSource="{Binding Messages}">
@@ -214,18 +248,195 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <Border BorderBrush="GreenYellow" BorderThickness="1" Grid.Column="1">
-            <h:HelixViewport3D x:Name="viewPort3d"  ShowFrameRate="False" ZoomExtentsWhenLoaded="True" 
-                          ZoomAroundMouseDownPoint="True" RotateAroundMouseDownPoint="True" 
-                          IsTopBottomViewOrientedToFrontBack="True" IsManipulationEnabled="False"
-                          IsViewCubeEdgeClicksEnabled="True">
-                <h:DefaultLights>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" BorderBrush="Maroon" BorderThickness="1">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="num"/>
+                            <Button Content="{Binding SetNumButtonName}" Command="{Binding SetNumValues}" Margin="5,1" Width="50"/>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDnum1.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDnum1.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDnum2.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDnum2.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDnum3.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDnum3.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDnum4.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDnum4.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDnum5.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDnum5.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetNumValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" BorderBrush="Maroon" BorderThickness="1" Margin="-1,0,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="robtarget"/>
+                            <Button Content="{Binding SetRobTargetButtonName}" Command="{Binding SetRobTargetValues}" Margin="5,1" Width="50"/>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDrobtarget1.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDrobtarget1.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDrobtarget2.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDrobtarget2.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDrobtarget3.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDrobtarget3.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDrobtarget4.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDrobtarget4.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDrobtarget5.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetNamesEnabled}"/>
+                                <TextBox Grid.Column="1" Text="{Binding RDrobtarget5.Value, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetRobTargetValuesEnabled}" Background="LightGray" Margin="-1,0,0,0"/>
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" BorderBrush="Maroon" BorderThickness="1" Margin="-1,0,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="IOSignal"/>
+                            <Button Content="{Binding SetIOButtonName}" Command="{Binding SetIOValues}" Margin="5,1" Width="50"/>
+                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDIO1.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetIONamesEnabled}"/>
+                                <ToggleButton Grid.Column="1" Style="{StaticResource HorizontalSwitchStyle}" Margin="0" IsChecked="{Binding RDIO1.IsON}" IsEnabled="{Binding SetIOValuesEnabled}"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDIO2.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetIONamesEnabled}"/>
+                                <ToggleButton Grid.Column="1" Style="{StaticResource HorizontalSwitchStyle}" Margin="0" IsChecked="{Binding RDIO2.IsON}" IsEnabled="{Binding SetIOValuesEnabled}"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDIO3.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetIONamesEnabled}"/>
+                                <ToggleButton Grid.Column="1" Style="{StaticResource HorizontalSwitchStyle}" Margin="0" IsChecked="{Binding RDIO3.IsON}" IsEnabled="{Binding SetIOValuesEnabled}"/>
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="2,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding RDIO4.Name, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SetIONamesEnabled}"/>
+                                <ToggleButton Grid.Column="1" Style="{StaticResource HorizontalSwitchStyle}" Margin="0" IsChecked="{Binding RDIO4.IsON}" IsEnabled="{Binding SetIOValuesEnabled}"/>
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Border Grid.Row="2" BorderBrush="Black" BorderThickness="1">
+                <h:HelixViewport3D x:Name="viewPort3d"  ShowFrameRate="False" ZoomExtentsWhenLoaded="True" 
+                  ZoomAroundMouseDownPoint="True" RotateAroundMouseDownPoint="True" 
+                  IsTopBottomViewOrientedToFrontBack="True" IsManipulationEnabled="False"
+                  IsViewCubeEdgeClicksEnabled="True">
+                    <h:DefaultLights>
 
-                </h:DefaultLights>
-                <h:HelixViewport3D.Background>
-                    <SolidColorBrush Color="ForestGreen"/>
-                </h:HelixViewport3D.Background>
-            </h:HelixViewport3D>
-        </Border>
+                    </h:DefaultLights>
+                    <h:HelixViewport3D.Background>
+                        <SolidColorBrush Color="ForestGreen"/>
+                    </h:HelixViewport3D.Background>
+                </h:HelixViewport3D>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

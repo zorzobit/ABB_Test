@@ -1,6 +1,9 @@
-﻿using ABB.Robotics.Controllers.MotionDomain;
+﻿using ABB.Robotics.Controllers;
+using ABB.Robotics.Controllers.MotionDomain;
 using ABB.Robotics.Controllers.RapidDomain;
 using ABB.Robotics.RobotStudio.Stations;
+using PropertyChanged;
+using RobotStudio.API.Internal;
 using RobotStudio.Services.RobApi;
 using System;
 using System.Collections.Generic;
@@ -109,6 +112,52 @@ namespace ABB_Test
                 Modules = abb_interface.GetModules();
                 ProgramPosition = abb_interface.GetProgramPos();
                 Messages = new ObservableCollection<string>(abb_interface.GetMessages());
+                if (SetNumValuesEnabled)
+                {
+                    abb_interface.WriteNumData(RDnum1);
+                    abb_interface.WriteNumData(RDnum2);
+                    abb_interface.WriteNumData(RDnum3);
+                    abb_interface.WriteNumData(RDnum4);
+                    abb_interface.WriteNumData(RDnum5);
+                }
+                else
+                {
+                    abb_interface.ReadNumData(RDnum1);
+                    abb_interface.ReadNumData(RDnum2);
+                    abb_interface.ReadNumData(RDnum3);
+                    abb_interface.ReadNumData(RDnum4);
+                    abb_interface.ReadNumData(RDnum5);
+                }
+                if (SetRobTargetValuesEnabled)
+                {
+                    abb_interface.WriteRobtargetData(RDrobtarget1);
+                    abb_interface.WriteRobtargetData(RDrobtarget2);
+                    abb_interface.WriteRobtargetData(RDrobtarget3);
+                    abb_interface.WriteRobtargetData(RDrobtarget4);
+                    abb_interface.WriteRobtargetData(RDrobtarget5);
+                }
+                else
+                {
+                    abb_interface.ReadRobtargetData(RDrobtarget1);
+                    abb_interface.ReadRobtargetData(RDrobtarget2);
+                    abb_interface.ReadRobtargetData(RDrobtarget3);
+                    abb_interface.ReadRobtargetData(RDrobtarget4);
+                    abb_interface.ReadRobtargetData(RDrobtarget5);
+                }
+                if (SetIOValuesEnabled)
+                {
+                    abb_interface.WriteIOData(RDIO1);
+                    abb_interface.WriteIOData(RDIO2);
+                    abb_interface.WriteIOData(RDIO3);
+                    abb_interface.WriteIOData(RDIO4);
+                }
+                else
+                {
+                    abb_interface.ReadIOData(RDIO1);
+                    abb_interface.ReadIOData(RDIO2);
+                    abb_interface.ReadIOData(RDIO3);
+                    abb_interface.ReadIOData(RDIO4);
+                }
             }
         }
         public int Override {  get; set; }
@@ -118,6 +167,34 @@ namespace ABB_Test
         public string ActiveTask {  get; set; }
         public string Modules { get; set; }
         public string ProgramPosition { get; set; }
+
+        public bool SetNumValuesEnabled { get; set; } = false;
+        public bool SetNumNamesEnabled { get; set; } = true;
+        public string SetNumButtonName { get; set; } = "SET";
+        public bool SetRobTargetValuesEnabled { get; set; } = false;
+        public bool SetRobTargetNamesEnabled { get; set; } = true;
+        public string SetRobTargetButtonName { get; set; } = "SET";
+        public bool SetIOValuesEnabled { get; set; } = false;
+        public bool SetIONamesEnabled { get; set; } = true;
+        public string SetIOButtonName { get; set; } = "SET";
+
+        public RDItem RDnum1 { get; set; }
+        public RDItem RDnum2 { get; set; }
+        public RDItem RDnum3 { get; set; }
+        public RDItem RDnum4 { get; set; }
+        public RDItem RDnum5 { get; set; }
+
+        public RDItem RDrobtarget1 { get; set; }
+        public RDItem RDrobtarget2 { get; set; }
+        public RDItem RDrobtarget3 { get; set; }
+        public RDItem RDrobtarget4 { get; set; }
+        public RDItem RDrobtarget5 { get; set; }
+
+        public RDItem RDIO1 { get; set; }
+        public RDItem RDIO2 { get; set; }
+        public RDItem RDIO3 { get; set; }
+        public RDItem RDIO4 { get; set; }
+
         public ObservableCollection<string> Messages { get; set; }
         public ICommand ConnectButtonClick
         {
@@ -131,7 +208,24 @@ namespace ABB_Test
                         if (abb_interface.Controller != null)
                         {
                             ConnectionStatus = abb_interface.Controller.IPAddress.ToString();
-                            ConnectButtonContext = "Disconnect"; 
+                            ConnectButtonContext = "Disconnect";
+                            RDnum1 = new RDItem();
+                            RDnum2 = new RDItem();
+                            RDnum3 = new RDItem();
+                            RDnum4 = new RDItem();
+                            RDnum5 = new RDItem();
+
+                            RDrobtarget1 = new RDItem();
+                            RDrobtarget2 = new RDItem();
+                            RDrobtarget3 = new RDItem();
+                            RDrobtarget4 = new RDItem();
+                            RDrobtarget5 = new RDItem();
+
+                            RDIO1 = new RDItem();
+                            RDIO2 = new RDItem();
+                            RDIO3 = new RDItem();
+                            RDIO4 = new RDItem();
+
                             DataCheck.RunWorkerAsync();
                         }
                     }
@@ -188,6 +282,70 @@ namespace ABB_Test
                 }, o => true);
             }
         }
+        public ICommand SetNumValues
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if (SetNumButtonName == "SET")
+                    {
+                        SetNumButtonName = "GET";
+                        SetNumValuesEnabled = true;
+                        SetNumNamesEnabled = false;
+                    }
+                    else
+                    {
+                        SetNumButtonName = "SET";
+                        SetNumValuesEnabled = false;
+                        SetNumNamesEnabled = true;
+                    }
+
+                }, o => true);
+            }
+        }
+        public ICommand SetRobTargetValues
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if (SetRobTargetButtonName == "SET")
+                    {
+                        SetRobTargetButtonName = "GET";
+                        SetRobTargetValuesEnabled = true;
+                        SetRobTargetNamesEnabled = false;
+                    }
+                    else
+                    {
+                        SetRobTargetButtonName = "SET";
+                        SetRobTargetValuesEnabled = false;
+                        SetRobTargetNamesEnabled = true;
+                    }
+                }, o => true);
+            }
+        }
+        public ICommand SetIOValues
+        {
+            get
+            {
+                return new RelayCommand(o =>
+                {
+                    if (SetIOButtonName == "SET")
+                    {
+                        SetIOButtonName = "GET";
+                        SetIOValuesEnabled = true;
+                        SetIONamesEnabled = false;
+                    }
+                    else
+                    {
+                        SetIOButtonName = "SET";
+                        SetIOValuesEnabled = false;
+                        SetIONamesEnabled = true;
+                    }
+                }, o => true);
+            }
+        }
     }
     public class PositionModel
     {
@@ -211,5 +369,12 @@ namespace ABB_Test
         public double Q2 { get; set; }
         public double Q3 { get; set; }
         public double Q4 { get; set; }
+    }
+    [AddINotifyPropertyChangedInterface] // Fody automatically implements INotifyPropertyChanged
+    public class RDItem
+    {
+        public string Name { get; set; }
+        public string Value {  get; set; }
+        public bool IsON { get; set; }
     }
 }
