@@ -1,10 +1,15 @@
 ﻿using ABB.Robotics.Controllers;
 using ABB.Robotics.Controllers.Discovery;
+using ABB.Robotics.Controllers.EventLogDomain;
 using ABB.Robotics.Controllers.MotionDomain;
 using ABB.Robotics.Controllers.RapidDomain;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using Task = ABB.Robotics.Controllers.RapidDomain.Task;
+using EventLog = ABB.Robotics.Controllers.EventLogDomain.EventLog;
+using System.Security.Claims;
+using System.Collections.ObjectModel;
 
 namespace ABB_Test
 {
@@ -66,6 +71,7 @@ namespace ABB_Test
         private void Rapid_ExecutionStatusChanged(object sender, ExecutionStatusChangedEventArgs e)
         {
             var sfd = e.Status;
+
         }
 
         private void Rapid_TaskEnabledChanged(object sender, TaskEnabledChangedEventArgs e)
@@ -79,6 +85,35 @@ namespace ABB_Test
             this.Controller.Logoff();
             this.Controller?.Dispose();
             IsConnected = false;
+        }
+        private List<string> Messages;
+        public List<string> GetMessages()
+        {
+            if(Messages == null)Messages = new List<string>();
+            if (Controller == null || !Controller.Connected)
+                {
+                    Messages.Add("Disconnected from controller");
+                    return Messages;
+                }
+
+    EventLog eventLog = Controller.EventLog;
+    EventLogCategory logs = eventLog.GetCategory(CategoryType.Common);
+    var logArray = logs.Messages
+                        .OrderByDescending(x => x.Timestamp) // Sort by newest first
+                        .Take(10) // Limit to last 10 messages
+                        .ToArray();
+
+                foreach (var message in logArray)
+                {
+                    string logEntry = $"Date: {message.Timestamp}, Num: {message.Number}, Message: {message.Title}";
+
+                    // Only add if it doesn't already exist
+                    if (!Messages.Any(m => m.Contains($"Date: {message.Timestamp}") && m.Contains($"Num: {message.Number}")))
+                    {
+                        Messages.Add(logEntry);
+                    }
+                }
+                return Messages;
         }
         public JointTarget GetPosJ()
         {
@@ -156,6 +191,19 @@ namespace ABB_Test
 
             }
 
+        }
+
+        internal string GetProgramPos()
+        {
+            try
+            {
+                var pp = task.ProgramPointer;
+                return pp.Module + "/" + pp.Routine + "/" + pp.Range.Begin.Column + ":" + pp.Range.Begin.Row;
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
     }
 }

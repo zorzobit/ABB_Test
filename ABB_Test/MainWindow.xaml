@@ -7,7 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ABB_Test"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -19,6 +19,7 @@
                 <RowDefinition Height="12"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid>
@@ -33,6 +34,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
@@ -161,10 +163,12 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Label Content="{Binding OperationStatus}"/>
                     <Label Grid.Row="1" Content="{Binding ActiveTask}"/>
                     <TextBlock Grid.Row="2" Text="{Binding Modules}" TextWrapping="Wrap" Margin="5"/>
+                    <Label Grid.Row="3" Content="{Binding ProgramPosition}"/>
                 </Grid>
             </Grid>
             <Grid Grid.Row="3">
@@ -176,9 +180,16 @@
                 <Slider Grid.Column="1" x:Name="OverrideSlider" Value="{Binding Override}" Maximum="100" Margin="5" MaxWidth="300"/>
             </Grid>
             <Grid Grid.Row="4">
-                
-            <Grid>
-                
+                <ListView ItemsSource="{Binding Messages}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" Padding="5"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            <Grid Grid.Row="5">
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
                     <!-- Play Button -->
                     <Button Padding="10" Margin="5" Background="Transparent" ToolTip="Play"  Command="{Binding Start}">
@@ -201,7 +212,6 @@
                     </Button>
 
                 </StackPanel>
-            </Grid>
             </Grid>
         </Grid>
         <Border BorderBrush="GreenYellow" BorderThickness="1" Grid.Column="1">

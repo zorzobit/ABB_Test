@@ -4,6 +4,7 @@ using ABB.Robotics.RobotStudio.Stations;
 using RobotStudio.Services.RobApi;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -106,6 +107,8 @@ namespace ABB_Test
                     Override = abb_interface.GetOverride();
                 ActiveTask=abb_interface.GetTaskStatus();
                 Modules = abb_interface.GetModules();
+                ProgramPosition = abb_interface.GetProgramPos();
+                Messages = new ObservableCollection<string>(abb_interface.GetMessages());
             }
         }
         public int Override {  get; set; }
@@ -114,6 +117,8 @@ namespace ABB_Test
         public string ConnectButtonContext { get; set; }
         public string ActiveTask {  get; set; }
         public string Modules { get; set; }
+        public string ProgramPosition { get; set; }
+        public ObservableCollection<string> Messages { get; set; }
         public ICommand ConnectButtonClick
         {
             get
