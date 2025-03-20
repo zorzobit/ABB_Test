@@ -92,6 +92,11 @@ namespace ABB_Test
         public List<string> GetMessages()
         {
             if(Messages == null)Messages = new List<string>();
+
+
+            var wo = Controller.MotionSystem.ActiveMechanicalUnit.WorkObject;
+            var to = Controller.MotionSystem.ActiveMechanicalUnit.GetPosition(CoordinateSystemType.WorkObject);
+
             if (Controller == null || !Controller.Connected)
                 {
                     Messages.Add("Disconnected from controller");
