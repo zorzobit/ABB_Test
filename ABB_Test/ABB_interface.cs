@@ -3,15 +3,9 @@ using ABB.Robotics.Controllers.Discovery;
 using ABB.Robotics.Controllers.EventLogDomain;
 using ABB.Robotics.Controllers.MotionDomain;
 using ABB.Robotics.Controllers.RapidDomain;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows;
 using Task = ABB.Robotics.Controllers.RapidDomain.Task;
 using EventLog = ABB.Robotics.Controllers.EventLogDomain.EventLog;
-using System.Security.Claims;
-using System.Collections.ObjectModel;
 using System.Globalization;
-using ABB.Robotics.RobotStudio.Stations;
 
 namespace ABB_Test
 {
