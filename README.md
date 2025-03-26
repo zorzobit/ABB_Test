@@ -51,8 +51,9 @@ robot.Abort();
 ```
 
 ## Requirements
-- ABB Robot Controller SDK
-- .NET Framework / .NET Core
+To use this project, you need the following dependencies:
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)  
+- [ABB PC SDK](https://developercenter.robotstudio.com/api/pcsdk/)  
 
 ## License
 This project is licensed under the MIT License.
