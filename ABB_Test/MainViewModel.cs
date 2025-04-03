@@ -98,8 +98,6 @@ namespace ABB_Test
                     RY = Math.Round(ry, 3),
                     RZ = Math.Round(rz, 3),
 
-
-
                     Q1 = Math.Round(tcpTarget.Rot.Q1, 3),
                     Q2 = Math.Round(tcpTarget.Rot.Q2, 3),
                     Q3 = Math.Round(tcpTarget.Rot.Q3, 3),
@@ -362,8 +360,6 @@ namespace ABB_Test
         public double RX { get; set; }
         public double RY { get; set; }
         public double RZ { get; set; }
-
-
 
         public double Q1 { get; set; }
         public double Q2 { get; set; }
